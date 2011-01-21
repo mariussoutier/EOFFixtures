@@ -28,6 +28,9 @@
 		<property name="build.framework.name" value="${project.name}" />
 		<property name="build.framework.name.lowercase" value="${project.name.lowercase}" />
 		
+		<property name="scala.home" value="/Developer/Scala/scala-2.8.1.final" />
+		<property name="scala-library-jar" value="${scala.home}/lib/scala-library.jar" />
+		
 		<path id="build.classpath">
 			<pathelement location="${scala-library-jar}" />
 			
@@ -121,6 +124,11 @@
 		<taskdef name="wocompile" classname="org.objectstyle.woproject.ant.WOCompile" />
 
 		<mkdir dir="bin" />
+		
+		<scalac srcdir="Sources" destdir="bin" classpathref="build.classpath">
+		    <include name="**/*.scala" />
+		</scalac>
+		
 		<wocompile srcdir="Sources" destdir="bin" source="1.5" target="1.5">
 			<frameworks root="ProjectLocal" embed="false" eclipse="true" />
 			<frameworks root="External" embed="false" eclipse="true" />
@@ -134,9 +142,5 @@
 				</fileset>
 			</classpath>
 		</wocompile>
-		
-		<scalac srcdir="Sources" destdir="bin" classpathref="build.classpath">
-		    <include name="**/*.scala" />
-		</scalac>
 	</target>
 </project>
