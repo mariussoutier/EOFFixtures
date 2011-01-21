@@ -21,10 +21,9 @@ object Fixtures {
 	
 	def load(ec: EOEditingContext) {
 		// TODO Localization via WOResourceManager
-		val text = scala.io.Source.fromFile("Resources/initial-data.yaml") mkString
+		val text = scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "EOFFixtures.fileName")) mkString
 		
 		val yaml = new Yaml()
-		
 		val yamlResult = yaml.load(text)
 		val yamlMap = 
 			if (yamlResult.isInstanceOf[java.util.Map[String, Any]])
