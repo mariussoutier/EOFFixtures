@@ -1,0 +1,21 @@
+# Set this to true in your app
+#EOFFixtures.loadInitialData=false
+
+# File name in Resources folder
+EOFFixtures.fileName=initial-data.yaml
+
+# Set this to true if you have self-referential relationships
+#EOFFixtures.saveOnEachInsert=false
+
+
+
+### TODO
+
+# Enable to use different files depending on language
+#EOFFixtures.useLocalizedFiles=false
+#EOFFixtures.language=German
+
+# Suffix, currently only yaml is supported so has no effect
+#EOFFixtures.type=yaml
+
+#EOFFixtures.allowDump=false
