@@ -2,7 +2,7 @@
 #EOFFixtures.loadInitialData=false
 
 # File name in Resources folder
-EOFFixtures.fileName=initial-data.yaml
+#EOFFixtures.fileName=fixtures.yaml
 
 # Set this to true if you have self-referential relationships
 #EOFFixtures.saveOnEachInsert=false
