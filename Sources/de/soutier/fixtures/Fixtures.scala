@@ -14,15 +14,25 @@ import er.extensions.foundation.ERXProperties
 import er.extensions.eof.{ERXEC, ERXEOControlUtilities}
 
 
+sealed class Fixtures
+
 object Fixtures {
-	private lazy val logger = Logger.getLogger(this.getClass.getName)
+	private lazy val logger = Logger.getLogger(classOf[Fixtures])
 	
 	def load(): Unit = load(ERXEC.newEditingContext)
 	
 	def load(ec: EOEditingContext) {
+		logger.debug("Parsing file: " + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml"))
+		val text =
+			try {
+				scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml")) mkString
+			} catch {
+				case fnfe: java.io.FileNotFoundException => logger.warn("Fixtures file not found."); ""
+				case _ => ""
+			}
+		
 		// TODO Localization via WOResourceManager
-		val text = scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml")) mkString
-		// final String content = new String(this.resourceManager().bytesForResourceNamed(ERXProperties.stringForKeyWithDefault("EOFFixtures.initalDataFile", "initial-data.yaml"), "app", null));
+		//val content = new String(this.resourceManager().bytesForResourceNamed(ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml"), "app", languages));
 		
 		val yaml = new Yaml()
 		val yamlResult = yaml.load(text)
