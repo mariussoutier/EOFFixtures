@@ -1,13 +1,13 @@
 package de.soutier.fixtures
 
-
 import scalaj.collection.Imports._
 
 import org.yaml.snakeyaml._
 
 import org.apache.log4j.Logger
 
-import com.webobjects.foundation.{NSDictionary, NSArray, NSMutableArray}
+import com.webobjects.foundation.{NSArray}
+import com.webobjects.appserver.WOApplication
 import com.webobjects.eocontrol.{EOEnterpriseObject, EOEditingContext}
 
 import er.extensions.foundation.ERXProperties
@@ -22,17 +22,18 @@ object Fixtures {
 	def load(): Unit = load(ERXEC.newEditingContext)
 	
 	def load(ec: EOEditingContext) {
-		logger.debug("Parsing file: " + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml"))
-		val text =
-			try {
-				scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml")) mkString
-			} catch {
-				case fnfe: java.io.FileNotFoundException => logger.warn("Fixtures file not found."); ""
-				case _ => ""
-			}
+		val fileName = ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml")
+		logger.debug("Parsing file: " + fileName)
+
+		val languages = ERXProperties.stringForKey("EOFFixtures.language") match {
+			case language: String => new NSArray[String](language)
+			case _ => null
+		}
 		
-		// TODO Localization via WOResourceManager
-		//val content = new String(this.resourceManager().bytesForResourceNamed(ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml"), "app", languages));
+		val text = WOApplication.application.resourceManager.bytesForResourceNamed(fileName, "app", languages) match {
+			case null => logger.warn("File " + fileName + " not found.") ; ""	
+			case bytes => new String(bytes)
+		}
 		
 		val yaml = new Yaml()
 		val yamlResult = yaml.load(text)
