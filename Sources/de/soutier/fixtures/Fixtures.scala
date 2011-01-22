@@ -31,21 +31,15 @@ object Fixtures {
 		}
 		
 		val text = WOApplication.application.resourceManager.bytesForResourceNamed(fileName, "app", languages) match {
-			case null => logger.warn("File " + fileName + " not found.") ; ""	
+			case null => logger.warn("File " + fileName + " not found.") ; null
 			case bytes => new String(bytes)
 		}
 		
-		val yaml = new Yaml()
-		val yamlResult = yaml.load(text)
-		val yamlMap = 
-			if (yamlResult.isInstanceOf[java.util.Map[String, Any]])
-				yamlResult.asInstanceOf[java.util.Map[String, Any]] asScala
-			else Map[String, Any]()
-		
+		val entitiesMap = entityMapFromText(text).getOrElse(Map[String, Any]())
 		val objectCache = scala.collection.mutable.Map[String, EOEnterpriseObject]()
 		val entityExtractor = """([^(]+)\(([^)]+)\)""".r
 
-		for (key <- yamlMap.keysIterator) {
+		for (key <- entitiesMap.keysIterator) {
 			key match {
 				case entityExtractor(entityName, id) => {
 					logger.debug("Parsed: " + entityName + " with id: " + id)
@@ -54,7 +48,7 @@ object Fixtures {
 						case Some(alreadyPresent) =>
 						case None => {
 							val insertedObject = ERXEOControlUtilities.createAndInsertObject(ec, entityName)
-							val attributes = yamlMap.get(key).get.asInstanceOf[java.util.Map[String, Any]] asScala
+							val attributes = entitiesMap.get(key).get.asInstanceOf[java.util.Map[String, Any]] asScala
 							
 							for (attributeKey <- attributes.keysIterator) {
 								if (insertedObject.attributeKeys.contains(attributeKey)) {
@@ -77,6 +71,16 @@ object Fixtures {
 		}
 		
 		ec.saveChanges
+	}
+	
+	private def entityMapFromText(text: String) = {
+		// Currently only YAML supported
+		val yaml = new Yaml()
+		val yamlResult = yaml.load(text)
+		yamlResult match {
+			case map: java.util.Map[String, Any] => Some(map asScala)
+			case _ => None
+		}
 	}
 	
 	def dump(objects: NSArray[_ <: EOEnterpriseObject]) = {
