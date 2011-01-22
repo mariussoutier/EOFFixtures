@@ -11,8 +11,8 @@
  
  == Usage ==
   * Add EOFFixtures to your WebObjects/WOnder application's build path (as a WebObjects framework in Eclipse).
-  * Create a YAML file (default name is initial-data.yaml, you can change this via the EOFFixtures.fileName property) in your Resources folder.
-    For an example see the FixturesClient project.
+  * Create a YAML file (default name is fixtures.yaml, you can change this via the EOFFixtures.fileName property) in your Resources folder.
+    (For an example see the FixturesClient project.)
   * In your application's Properties, set "EOFFixtures.loadInitialData" to true or manually call Fixtures.load().
   * Pro-tip: Using different Properties.username files, you can define different fixtures for different environments.
  
