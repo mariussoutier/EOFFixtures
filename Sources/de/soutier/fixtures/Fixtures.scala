@@ -21,7 +21,8 @@ object Fixtures {
 	
 	def load(ec: EOEditingContext) {
 		// TODO Localization via WOResourceManager
-		val text = scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "EOFFixtures.fileName")) mkString
+		val text = scala.io.Source.fromFile("Resources/" + ERXProperties.stringForKeyWithDefault("EOFFixtures.fileName", "fixtures.yaml")) mkString
+		// final String content = new String(this.resourceManager().bytesForResourceNamed(ERXProperties.stringForKeyWithDefault("EOFFixtures.initalDataFile", "initial-data.yaml"), "app", null));
 		
 		val yaml = new Yaml()
 		val yamlResult = yaml.load(text)
@@ -31,8 +32,6 @@ object Fixtures {
 			else Map[String, Any]()
 		
 		val objectCache = scala.collection.mutable.Map[String, EOEnterpriseObject]()
-		
-		val nestedContext = ERXEC.newEditingContext(ec)
 		val entityExtractor = """([^(]+)\(([^)]+)\)""".r
 
 		for (key <- yamlMap.keysIterator) {
@@ -43,7 +42,7 @@ object Fixtures {
 					objectCache.get(key.toString) match {
 						case Some(alreadyPresent) =>
 						case None => {
-							val insertedObject = ERXEOControlUtilities.createAndInsertObject(nestedContext, entityName)
+							val insertedObject = ERXEOControlUtilities.createAndInsertObject(ec, entityName)
 							val attributes = yamlMap.get(key).get.asInstanceOf[java.util.Map[String, Any]] asScala
 							
 							for (attributeKey <- attributes.keysIterator) {
@@ -57,7 +56,6 @@ object Fixtures {
 										insertedObject.addObjectToBothSidesOfRelationshipWithKey(objectCache.get(obj.toString).get, attributeKey)
 							}
 							objectCache.put(id.toString, insertedObject)
-							nestedContext.saveChanges
 							if (ERXProperties.booleanForKey("EOFFixtures.saveOnEachInsert"))
 								ec.saveChanges
 						}
