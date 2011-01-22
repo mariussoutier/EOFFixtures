@@ -7,7 +7,7 @@
   * Marketing/demo deployments
  
  A reference of the YAML markup language can be found here: http://www.yaml.org/.
- Inspired by the fixtures mechanism in the Play! framework (http://http://www.playframework.org/).
+ Inspired by the fixtures mechanism in the Play! framework (http://www.playframework.org/).
  
  == Usage ==
   * Add EOFFixtures to your WebObjects/WOnder application's build path (as a WebObjects framework in Eclipse).
@@ -18,7 +18,7 @@
  
  == Used libaries ==
  * Scala
- * Scala-j collection (https://github.com/scalaj/scalaj-collection)
+ * Scalaj-collection (https://github.com/scalaj/scalaj-collection)
  * Snake YAML (http://code.google.com/p/snakeyaml/)
  * Project WOnder
  
