@@ -15,6 +15,7 @@
     (For an example see the FixturesClient project.)
   * In your application's Properties, set "EOFFixtures.loadInitialData" to true or manually call Fixtures.load().
   * Pro-tip: Using different Properties.username files, you can define different fixtures for different environments.
+  * To build this as a framework, you have to set ${scala.home} to your Scala install dir
  
  == Used libaries ==
  * Scala
