@@ -1,6 +1,5 @@
 <project name="EOFFixtures" default="build" basedir=".">
-	<target name="build" depends="init.build,build.woframework,javaclient,package" />
-
+	<target name="build" depends="init.build,build.woframework" />
 	<target name="install" depends="init.install,build.woframework,javaclient" />
 
 	<target name="clean" depends="init.properties">
@@ -39,9 +38,6 @@
 			<pathelement location="${wo.local.frameworks}/ERJars.framework/Resources/Java/ERFoundation.jar" />
 			<pathelement location="${wo.local.frameworks}/ERJars.framework/Resources/Java/ERJars.jar" />
 			<pathelement location="${wo.local.frameworks}/ERJars.framework/Resources/Java/ERWebObjects.jar" />
-			<pathelement location="${wo.local.frameworks}/ERJavaMail.framework/Resources/Java/ERJavaMail.jar" />
-			<pathelement location="${wo.local.frameworks}/WOLips.framework/Resources/Java/WOLips.jar" />
-			<pathelement location="${wo.local.frameworks}/H2PlugIn.framework/Resources/Java/H2PlugIn.jar" />
 			
 			<pathelement location="${wo.system.frameworks}/JavaWebObjects.framework/Resources/Java/javawebobjects.jar" />
 			<pathelement location="${wo.system.frameworks}/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar" />
