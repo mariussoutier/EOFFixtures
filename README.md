@@ -12,9 +12,9 @@ I found this really useful for the following use cases:
 * Initial users for newly deployed applications
 * Marketing/demo deployments
  
-A reference of the YAML markup language can be found here: http://www.yaml.org/.
+A reference of the YAML markup language can be found here: [YAML Reference](http://www.yaml.org/).
 
-Inspired by the fixtures mechanism in the Play! framework (http://www.playframework.org/).
+Inspired by the fixtures mechanism in the [Play! framework](http://www.playframework.org/).
  
 Usage
 -----
@@ -27,10 +27,10 @@ Usage
  
 Used libaries
 -------------
-* Scala
-* Scalaj-collection (https://github.com/scalaj/scalaj-collection)
-* Snake YAML (http://code.google.com/p/snakeyaml/)
-* Project WOnder
+* [Scala](http://www.scala-lang.org/)
+* [Scalaj-collection](https://github.com/scalaj/scalaj-collection)
+* [Snake YAML](http://code.google.com/p/snakeyaml/)
+* [Project WOnder](http://projectwonder.blogspot.com/)
  
  
 **Enjoy!**
