@@ -34,41 +34,25 @@ object Fixtures {
       case bytes => new String(bytes)
     }
 
-    val entitiesMap = entityMapFromText(text).getOrElse(Map[String, Any]())
+    val entitiesMap = entityMapFromText(text).getOrElse(scala.collection.Map[String, Any]())
     val objectCache = scala.collection.mutable.Map[String, EOEnterpriseObject]()
-    val entityExtractor = """([^(]+)\(([^)]+)\)""".r
+    val entityExtractor = """([^(]+)\(([^)]+)?\)""".r
 
     for (key <- entitiesMap.keysIterator) {
       key match {
         case entityExtractor(entityName, id) => {
-          logger.debug("Parsed: " + entityName + " with id: " + id)
-
-          objectCache.get(key.toString) match {
-            case Some(alreadyPresent) =>
-            case None => {
-              val insertedObject = ERXEOControlUtilities.createAndInsertObject(ec, entityName)
-
-              val attributes = entitiesMap.get(key) match {
-                case Some(x: java.util.Map[String, Any]) => x asScala
-                case _ => Map[String, Any]()
+              logger.debug("Parsed: " + entityName + " with id: " + id)
+              objectCache.get(key.toString) match {
+                case Some(alreadyPresent) =>
+                case None => {
+                  val insertedObject = insertEnterpriseObject(ec, entityName, parsedAttributes(entitiesMap.get(key)), objectCache)
+                  objectCache.put(id.toString, insertedObject)
+                }
               }
-
-              for (attributeKey <- attributes.keysIterator) {
-                if (insertedObject.attributeKeys.contains(attributeKey)) {
-                  insertedObject.takeValueForKey(attributes.get(attributeKey).get, attributeKey)
-                } else if (insertedObject.toOneRelationshipKeys.contains(attributeKey)) {
-                  val relationshipObject = objectCache.get(attributes.get(attributeKey).get.toString).get
-                  insertedObject.addObjectToBothSidesOfRelationshipWithKey(relationshipObject, attributeKey)
-                } else if (insertedObject.toManyRelationshipKeys().contains(attributeKey))
-                  for (obj <- attributes.get(attributeKey).get.asInstanceOf[java.util.List[Any]])
-                    insertedObject.addObjectToBothSidesOfRelationshipWithKey(objectCache.get(obj.toString).get, attributeKey)
-              }
-              objectCache.put(id.toString, insertedObject)
               if (ERXProperties.booleanForKey("EOFFixtures.saveOnEachInsert"))
                 ec.saveChanges
-            }
-          }
         }
+
         case unknownItem => println("Could not parse " + unknownItem)
       }
     }
@@ -84,6 +68,32 @@ object Fixtures {
       case map: java.util.Map[String, Any] => Some(map asScala)
       case _ => None
     }
+  }
+
+  private def parsedAttributes(parsedObject: Any) = {
+    parsedObject match {
+      case Some(x: java.util.Map[String, Any]) => x asScala
+      case _ => Map[String, Any]()
+    }
+  }
+
+  private def insertEnterpriseObject(ec: EOEditingContext, entityName: String, entityAttributes: scala.collection.Map[String, Any], relationships: scala.collection.Map[String, EOEnterpriseObject]) = {
+    val insertedObject = ERXEOControlUtilities.createAndInsertObject(ec, entityName)
+
+    for (attributeKey <- entityAttributes.keysIterator) {
+      if (insertedObject.attributeKeys.contains(attributeKey)) {
+        insertedObject.takeValueForKey(entityAttributes.get(attributeKey).get, attributeKey)
+      } else if (insertedObject.toOneRelationshipKeys.contains(attributeKey)) {
+        val relationshipObject = relationships.get(entityAttributes.get(attributeKey).get.toString).get
+        insertedObject.addObjectToBothSidesOfRelationshipWithKey(relationshipObject, attributeKey)
+      } else if (insertedObject.toManyRelationshipKeys().contains(attributeKey)) {
+        for (obj <- entityAttributes.get(attributeKey).get.asInstanceOf[java.util.List[Any]])
+          insertedObject.addObjectToBothSidesOfRelationshipWithKey(relationships.get(obj.toString).get, attributeKey)
+      } else // This can be (ab)used to allow calls to method or properties that do not exist in the class description
+        insertedObject.valueForKey(attributeKey)
+    }
+
+    insertedObject
   }
 
   def dump(objects: NSArray[_ <: EOEnterpriseObject]) = {
