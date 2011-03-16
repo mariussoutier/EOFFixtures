@@ -41,16 +41,16 @@ object Fixtures {
     for (key <- entitiesMap.keysIterator) {
       key match {
         case entityExtractor(entityName, id) => {
-              logger.debug("Parsed: " + entityName + " with id: " + id)
-              objectCache.get(key.toString) match {
-                case Some(alreadyPresent) =>
-                case None => {
-                  val insertedObject = insertEnterpriseObject(ec, entityName, parsedAttributes(entitiesMap.get(key)), objectCache)
-                  objectCache.put(id.toString, insertedObject)
-                }
-              }
-              if (ERXProperties.booleanForKey("EOFFixtures.saveOnEachInsert"))
-                ec.saveChanges
+          logger.debug("Parsed: " + entityName + " with id: " + id)
+          objectCache.get(key.toString) match {
+            case Some(alreadyPresent) =>
+            case None => {
+              val insertedObject = insertEnterpriseObject(ec, entityName, parsedAttributes(entitiesMap.get(key)), objectCache)
+              objectCache.put(id.toString, insertedObject)
+            }
+          }
+          if (ERXProperties.booleanForKey("EOFFixtures.saveOnEachInsert"))
+            ec.saveChanges
         }
 
         case unknownItem => println("Could not parse " + unknownItem)
@@ -89,8 +89,14 @@ object Fixtures {
       } else if (insertedObject.toManyRelationshipKeys().contains(attributeKey)) {
         for (obj <- entityAttributes.get(attributeKey).get.asInstanceOf[java.util.List[Any]])
           insertedObject.addObjectToBothSidesOfRelationshipWithKey(relationships.get(obj.toString).get, attributeKey)
-      } else // This can be (ab)used to allow calls to method or properties that do not exist in the class description
-        insertedObject.valueForKey(attributeKey)
+      } else { // This can be (ab)used to allow calls to methods or properties that do not exist in the class description
+        entityAttributes.get(attributeKey) match {
+          case Some(x) if (x == null) => insertedObject.valueForKey(attributeKey)
+          case Some(x) => insertedObject.takeValueForKey(x, attributeKey)
+          case None =>
+        }
+      }
+
     }
 
     insertedObject
