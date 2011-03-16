@@ -1,14 +1,19 @@
-EOFFixtures framework
+EOFFixtures.framework
 =====================
+
+Overview
+--------
 
 This is a small framework that allows using YAML files to populate WebObjects/EOF based applications.
  
 I found this really useful for the following use cases:
+
 * Development
 * Initial users for newly deployed applications
 * Marketing/demo deployments
  
 A reference of the YAML markup language can be found here: http://www.yaml.org/.
+
 Inspired by the fixtures mechanism in the Play! framework (http://www.playframework.org/).
  
 Usage
@@ -28,4 +33,4 @@ Used libaries
 * Project WOnder
  
  
-Enjoy!
+**Enjoy!**
