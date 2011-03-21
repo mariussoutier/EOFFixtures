@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="Sources"/>
-	<classpathentry kind="src" path="Tests"/>
 	<classpathentry kind="lib" path="Libraries/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="Libraries/scala-library.jar"/>
 	<classpathentry kind="lib" path="Libraries/snakeyaml-1.7.jar"/>
