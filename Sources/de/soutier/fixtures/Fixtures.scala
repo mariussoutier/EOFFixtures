@@ -1,20 +1,23 @@
 package de.soutier.fixtures
 
-import scalaj.collection.Imports._
-
-import org.yaml.snakeyaml._
-
 import org.apache.log4j.Logger
-
-import com.webobjects.foundation.{ NSArray }
+import org.yaml.snakeyaml.Yaml
 import com.webobjects.appserver.WOApplication
-import com.webobjects.eocontrol.{ EOEnterpriseObject, EOEditingContext }
-
+import com.webobjects.eocontrol.EOEditingContext
+import com.webobjects.eocontrol.EOEnterpriseObject
+import com.webobjects.foundation.NSArray
+import er.extensions.eof.ERXEC
+import er.extensions.eof.ERXEOControlUtilities
 import er.extensions.foundation.ERXProperties
-import er.extensions.eof.{ ERXEC, ERXEOControlUtilities }
+import scalaj.collection.Imports._
+import de.soutier.fixtures.yaml.TimestampConstructor
 
 sealed class Fixtures
 
+/**
+ * Fixtures will load a fixtures file and map it to Enterprise Objects.
+ * It finds the entites in the loaded models (thanks to EOClassDescription). 
+ */
 object Fixtures {
   private lazy val logger = Logger.getLogger(classOf[Fixtures])
 
@@ -62,7 +65,7 @@ object Fixtures {
 
   private def entityMapFromText(text: String) = {
     // Currently only YAML supported
-    val yaml = new Yaml()
+    val yaml = new Yaml(new TimestampConstructor)
     val yamlResult = yaml.load(text)
     yamlResult match {
       case map: java.util.Map[String, Any] => Some(map asScala)
@@ -96,7 +99,6 @@ object Fixtures {
           case None =>
         }
       }
-
     }
 
     insertedObject
@@ -104,9 +106,9 @@ object Fixtures {
 
   def dump(objects: NSArray[_ <: EOEnterpriseObject]) = {
     if (!ERXProperties.booleanForKeyWithDefault("EOFFixtures.allowDump", false))
-      throw new IllegalAccessException()
+      throw new IllegalAccessException
 
-    val yaml = new Yaml()
+    //val yaml = new Yaml
 
     // TODO Needs own mapper so it finds WO-like getters
     //yaml.dumpAll(objects)
