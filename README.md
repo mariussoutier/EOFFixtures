@@ -24,6 +24,9 @@ Usage
 * In your application's Properties, set "EOFFixtures.loadInitialData" to true or manually call Fixtures.load().
 * Pro-tip: Using different Properties.username files, you can define different fixtures for different environments.
 * To build this as a framework, you have to set ${scala.home} to your Scala install dir
+* Use the custom timestamp tags to ease the creation of NSTimestamp
+ * !now for the current date (aka `new NSTimestamp()`)
+ * !ts to create a calculated timestamp, in the format `<signed-number> <days|weeks|months>`, for example `!ts +3 days`, `!ts -3 weeks`, `!ts -1 month`.
  
 Used libaries
 -------------
