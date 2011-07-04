@@ -27,7 +27,7 @@
 		<property name="build.framework.name" value="${project.name}" />
 		<property name="build.framework.name.lowercase" value="${project.name.lowercase}" />
 		
-		<property name="scala.home" value="/Developer/Scala/scala-2.8.1.final" />
+		<property name="scala.home" value="/Developer/Scala/scala-2.9.0.1" />
 		<property name="scala-library-jar" value="${scala.home}/lib/scala-library.jar" />
 		
 		<path id="build.classpath">
